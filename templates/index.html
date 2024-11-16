@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
   <title>
-    Memory Box 
+    ReMIND
   </title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -21,6 +21,7 @@
   <!-- CSS Files -->
   <script src="/static/index.js"></script>
   <link href="/static/style.css" rel="stylesheet" />
+
 </head>
 <body>
   <svg style="display:none;">
@@ -102,7 +103,7 @@
   <header class="page-header">
     <nav>
       <a href="/home" aria-label="forecastr logo" class="logo">
-        <img src="\static\logo.png" width="180" height="90">
+        <img src="\static\logo.png" width="182" height="179">
       </a>
       <button class="toggle-mob-menu" aria-expanded="false" aria-label="open menu">
         <svg width="20" height="20" aria-hidden="true">
@@ -122,6 +123,22 @@
         <li>
           <a href="/locations" method="POST">
             <svg>
+              
+              <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+              <script>
+                  // Initialize the map and set the view to a specific latitude and longitude
+                  var map = L.map('map').setView([40.730610, -73.935242], 12); // New York coordinates
+
+                  // Add OpenStreetMap tile layer to the map
+                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  }).addTo(map);
+
+                  // Add a marker at the center
+                  var marker = L.marker([40.730610, -73.935242]).addTo(map);
+                  marker.bindPopup("<b>Hello New York!</b>").openPopup();
+              </script>
               <use xlink:href="#trends"></use>
             </svg>
             <span>Location</span>
@@ -190,11 +207,15 @@
               <th>Height</th>
               <th>Stage</th>
               <th>History</th>
+              <th>Latitude</th>
+              <th>Longitude</th>
             </tr>
+            
               {% for res in data %}
                 <tr>
                   {% for i in res %}
                     <td>{{i}}</td>
+            
                   {% endfor %}
                 </tr>
               {% endfor %}

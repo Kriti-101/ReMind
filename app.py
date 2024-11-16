@@ -12,18 +12,41 @@ def addpatientdata(data, id1):
     db.collection('patient').document(id1).set(data)
 
 def readpatient(table):
-    list=[]
-    temp=[]
-    keys=['id', 'name','age', 'gender','address', 'phone','email', 'blood', 'weight', 'height','stage','history']
+    patient_list = []  # To store the final list of patients
+    keys = ['id', 'name', 'age', 'gender', 'address', 'phone', 'email', 'blood', 'weight', 'height', 'stage', 'history', 'latitude','longitude']
+    
+    # Fetch data from Firestore collection
     result = db.collection(table).get()
+
     for res in result:
-        dict=res.to_dict()
-        for i in keys:
-            temp.append(dict[i])
-        list.append(temp)
-        temp=[]
-    list = sorted(list, key=lambda x: x[0])
-    return list
+        patient_dict = res.to_dict()
+        temp = []  # Reset temp list for each patient
+        
+        # Loop through the keys and append corresponding values to temp list
+        for key in keys:
+            if key == 'location':
+                # If the key is 'location' and it is a GeoPoint, we access latitude and longitude directly
+                location = patient_dict.get(key, None)
+                if isinstance(location, firestore.GeoPoint):  # Check if the location is a GeoPoint
+                    latitude = location.latitude  # Get latitude
+                    longitude = location.longitude  # Get longitude
+                    temp.append(f"{latitude}, {longitude}")  # Append as a formatted string
+                else:
+                    temp.append(None)  # If location is missing or not a GeoPoint, append None
+            else:
+                # For other keys, append the value directly
+                temp.append(patient_dict.get(key, None))
+
+        # Add the patient data to the final list
+        patient_list.append(temp)
+
+    # Sort the patient list based on the 'id' (which is the first element in each entry)
+    patient_list = sorted(patient_list, key=lambda x: x[0])
+
+    return patient_list
+
+
+
 
 def deletedata(collection, document):
     db.collection(collection).document(document).delete()
@@ -109,8 +132,10 @@ def addpatient():
         phone = request.form["phone"]
         history = request.form["history"]
         gender = request.form["gender"]
+        latitude = request.form['latitude']
+        longitude = request.form['longitude']
 
-        data ={'id':id1, 'name':name,'email':email, 'blood':blood, 'weight':weight,'age':age, 'height':height,'stage':stage,'address':address,'phone':phone, 'history':history,'gender':gender}
+        data ={'id':id1, 'name':name,'email':email, 'blood':blood, 'weight':weight,'age':age, 'height':height,'stage':stage,'address':address,'phone':phone, 'history':history,'gender':gender,'latitude':latitude, 'longitude':longitude}
         addpatientdata(data, id1)
 
         result = readpatient("patient")
@@ -242,8 +267,10 @@ def updatepatientdata():
         phone = request.form["phone"]
         history = request.form["history"]
         gender = request.form["gender"]
+        latitude = request.form['latitude']
+        longitude = request.form['longitude']
 
-        data ={'id':id1, 'name':name,'email':email, 'blood':blood, 'weight':weight,'age':age, 'height':height,'stage':stage,'address':address,'phone':phone, 'history':history,'gender':gender}
+        data ={'id':id1, 'name':name,'email':email, 'blood':blood, 'weight':weight,'age':age, 'height':height,'stage':stage,'address':address,'phone':phone, 'history':history,'gender':gender,'latitude':latitude, 'longitude':longitude}
         addpatientdata(data, id1)
 
     return render_template("editpatient.html")
