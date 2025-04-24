@@ -213,15 +213,15 @@ class PersonalInfoQA:
             else:
                 # If no matches, try to give a generic response based on keywords
                 keywords = {
-                    'hobbies': 'I enjoy several hobbies like hiking, photography, and playing sports.',
-                    'hobby': 'I enjoy several hobbies like hiking, photography, and playing sports.',
-                    'intrests': 'I enjoy several hobbies like hiking, photography, and playing sports.',
-                    'intrest': 'I enjoy several hobbies like hiking, photography, and playing sports.',
-                    'work': 'I work as a software engineer at Tech Corp.',
-                    'live': 'I live in San Francisco.',
-                    'age': 'I am 28 years old.',
-                    'childhood': 'I often reminisce about my childhood near the lake.',
-                    'education': 'I graduated from MIT in 2018 with a degree in Computer Science.'
+                    'hobbies': 'You enjoy several hobbies like hiking, photography, and playing sports.',
+                    'hobby': 'You enjoy several hobbies like hiking, photography, and playing sports.',
+                    'intrests': 'You enjoy several hobbies like hiking, photography, and playing sports.',
+                    'intrest': 'You enjoy several hobbies like hiking, photography, and playing sports.',
+                    'work': 'You work as a software engineer at Tech Corp.',
+                    'live': 'You live in San Francisco.',
+                    'age': 'You are 28 years old.',
+                    'childhood': 'You often reminisce about your childhood near the lake.',
+                    'education': 'You graduated from MIT in 2018 with a degree in Computer Science.'
                 }
                 
                 for key, response in keywords.items():
@@ -238,27 +238,27 @@ def run_voice_assistant():
     qa_system = PersonalInfoQA()
     
     training_text = """
-    I am 28 years old.
-    I am a software engineer at Tech Corp.
-    My favourite color is blue.
-    I live in San Francisco.
-    I graduated from MIT in 2018 with a degree in Computer Science.
-    I love hiking in the mountains during the weekends.
-    I enjoy playing sports, especially basketball.
-    I often reminisce about my childhood near the lake.
-    I love photography, especially landscapes and cityscapes.
-    I enjoy reading science fiction books, especially by Isaac Asimov and Philip K. Dick.
-    My favourite movie is Inception, and I love watching mind-bending films.
-    I once took a solo trip to Japan in 2020, which was one of the best experiences of my life.
-    I like playing video games, especially strategy games.
-    I once ran a marathon in 2021 and finished with a time of 4 hours and 15 minutes.
-    I am fluent in both English and Spanish.
-    I enjoy spending time at the beach and love watching the sunset.
-    I love cooking, especially trying out new recipes.
-    I enjoy giving back to the community and volunteer at a local animal shelter.
-    My first car was a used Honda Civic, and I remember how excited I was to get it.
-    I enjoy puzzles and riddles, and I often challenge myself with brain teasers.
-    """
+        You are 28 years old.
+        You a software engineer at Tech Corp.
+        Your favourite color is blue.
+        You live in San Francisco.
+        You graduated from MIT in 2018 with a degree in Computer Science.
+        You love hiking in the mountains during the weekends.
+        You enjoy playing sports, especially basketball.
+        You often reminisce about your childhood near the lake.
+        You love photography, especially landscapes and cityscapes.
+        You enjoy reading science fiction books, especially by Isaac Asimov and Philip K. Dick.
+        Your favourite movie is Inception, and you love watching mind-bending films.
+        You once took a solo trip to Japan in 2020, which was one of the best experiences of your life.
+        You like playing video games, especially strategy games.
+        You once ran a marathon in 2021 and finished with a time of 4 hours and 15 minutes.
+        You are fluent in both English and Spanish.
+        You enjoy spending time at the beach and love watching the sunset.
+        You love cooking, especially trying out new recipes.
+        You enjoy giving back to the community and volunteer at a local animal shelter.
+        Your first car was a used Honda Civic, remember how excited you were to get it.
+        You enjoy puzzles and riddles, and You often challenge Yourself with brain teasers.
+        """
     qa_system.train(training_text)
     
     speak("Hello! I'm your personal assistant. You can ask me questions or have a conversation with me. Say 'goodbye' when you want to end our chat.")
@@ -699,7 +699,7 @@ KV = '''
                     radius: [15]
 
             Button:
-                text: "← Back"
+                text: "Back"
                 size_hint_x: 0.2
                 background_color: 0.3, 0.7, 0.9, 1
                 on_press: root.manager.current = 'main'
@@ -724,7 +724,7 @@ KV = '''
                     radius: [15]
 
             Image:
-                source: 'ai_assistant_icon.png'  # Add an appropriate icon
+                source: "C:/Users/KRITI KANNAN/Pictures/ghibli image.png"  # Add an appropriate icon
                 size_hint: None, None
                 size: "120dp", "120dp"
                 pos_hint: {'center_x': 0.5}
@@ -815,14 +815,14 @@ class LocationManager:
                 city = data.get('address', {}).get('city', 
                        data.get('address', {}).get('town',
                        data.get('address', {}).get('village', 'Unknown City')))
-                location_text = f"📍 {city} • {lat:.4f}, {lon:.4f}"
+                location_text = f"{city} • {lat:.4f}, {lon:.4f}"
                 
                 if self.callback:
                     Clock.schedule_once(lambda dt: self.callback(location_text))
         except Exception as e:
             print(f"Location Error: {e}")
             if self.callback:
-                Clock.schedule_once(lambda dt: self.callback("📍 Location Unavailable"))
+                Clock.schedule_once(lambda dt: self.callback("Location Unavailable"))
                 
     def _get_location_from_ip(self):
         try:
@@ -835,7 +835,7 @@ class LocationManager:
                 lat = float(location[0])
                 lon = float(location[1])
                 self.current_location = (lat, lon)
-                location_text = f"📍 {city} • {lat:.4f}, {lon:.4f}"
+                location_text = f"{city} • {lat:.4f}, {lon:.4f}"
                 
                 if self.callback:
                     Clock.schedule_once(lambda dt: self.callback(location_text))
@@ -844,7 +844,7 @@ class LocationManager:
         except Exception as e:
             print(f"IP Location Error: {e}")
             if self.callback:
-                Clock.schedule_once(lambda dt: self.callback("📍 Location Unavailable"))
+                Clock.schedule_once(lambda dt: self.callback("Location Unavailable"))
                 
     def stop(self):
         if self.is_mobile:
@@ -1096,6 +1096,303 @@ class MedicationScreen(Screen):
         )
 
 class JogMemoryScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.voice_assistant_active = False
+        self.qa_system = PersonalInfoQA()
+        self._nltk_data_ready = False
+        Clock.schedule_once(self._init_nltk)
+        # Train the QA system when initializing
+        self.train_qa_system()
+        # Pre-download the NLTK data (this happens only once when the screen is initialized)
+        self.ensure_nltk_data()
+
+        # Voice recognition
+        self.recognizer = sr.Recognizer()
+        self.engine = pyttsx3.init()
+        self.engine.setProperty('rate', 150)
+        voices = self.engine.getProperty('voices')
+        self.engine.setProperty('voice', voices[0].id)
+        
+        # For handling assistant thread
+        self.assistant_thread = None
+        self.stop_thread = False
+
+        # Thread management
+        self.assistant_thread = None
+        self.stop_thread = False
+
+        # Initialize conversation widgets
+        self.conversation_scrollview = ScrollView(
+            size_hint=(1, 0.7),
+            do_scroll_x=False
+        )
+        self.conversation_layout = BoxLayout(
+            orientation='vertical',
+            size_hint_y=None,
+            spacing=10,
+            padding=10
+        )
+        self.conversation_layout.bind(minimum_height=self.conversation_layout.setter('height'))
+        self.conversation_scrollview.add_widget(self.conversation_layout)
+        
+        # Add to main layout after widget tree is built
+        Clock.schedule_once(self._finish_init)
+
+        def _init_nltk(self, dt):
+            try:
+                # First try to find existing data
+                nltk.data.find('tokenizers/punkt')
+                nltk.data.find('tokenizers/punkt_tab')
+                self._nltk_data_ready = True
+            except LookupError:
+                # If not found, try to download
+                try:
+                    import ssl
+                    try:
+                        _create_unverified_https_context = ssl._create_unverified_context
+                    except AttributeError:
+                        pass
+                    else:
+                        ssl._create_default_https_context = _create_unverified_https_context
+
+                    nltk.download('punkt', quiet=True)
+                    nltk.download('punkt_tab', quiet=True)
+                    self._nltk_data_ready = True
+                except Exception as e:
+                    print(f"Failed to download NLTK data: {e}")
+                    self._nltk_data_ready = False
+
+    def _finish_init(self, dt):
+        """Add the scrollview to the main layout after initialization"""
+        if hasattr(self, 'ids') and 'voice_button' in self.ids:
+            main_layout = self.ids.voice_button.parent
+            if main_layout:
+                main_layout.add_widget(self.conversation_scrollview, index=len(main_layout.children)-1)
+
+    def ensure_nltk_data(self):
+        try:
+            # First try to find the data
+            nltk.data.find('tokenizers/punkt')
+        except LookupError:
+            try:
+                # If not found, download it
+                import ssl
+                try:
+                    _create_unverified_https_context = ssl._create_unverified_context
+                except AttributeError:
+                    pass
+                else:
+                    ssl._create_default_https_context = _create_unverified_https_context
+                
+                nltk.download('punkt', quiet=True)
+                nltk.download('punkt_tab', quiet=True)  # Download the required table
+            except Exception as e:
+                print(f"Error downloading NLTK data: {e}")
+                # Fallback - try to continue without it
+                pass
+
+    def train_qa_system(self):
+        training_text = """
+        You are 28 years old.
+        You a software engineer at Tech Corp.
+        Your favourite color is blue.
+        You live in San Francisco.
+        You graduated from MIT in 2018 with a degree in Computer Science.
+        You love hiking in the mountains during the weekends.
+        You enjoy playing sports, especially basketball.
+        You often reminisce about your childhood near the lake.
+        You love photography, especially landscapes and cityscapes.
+        You enjoy reading science fiction books, especially by Isaac Asimov and Philip K. Dick.
+        Your favourite movie is Inception, and you love watching mind-bending films.
+        You once took a solo trip to Japan in 2020, which was one of the best experiences of your life.
+        You like playing video games, especially strategy games.
+        You once ran a marathon in 2021 and finished with a time of 4 hours and 15 minutes.
+        You are fluent in both English and Spanish.
+        You enjoy spending time at the beach and love watching the sunset.
+        You love cooking, especially trying out new recipes.
+        You enjoy giving back to the community and volunteer at a local animal shelter.
+        Your first car was a used Honda Civic, remember how excited you were to get it.
+        You enjoy puzzles and riddles, and You often challenge Yourself with brain teasers.
+        """
+        self.qa_system.train(training_text)
+
+    def on_enter(self):
+        if not hasattr(self, 'conversation_layout'):
+            self._setup_conversation_ui()
+        
+        self.add_message("Hello! I'm your personal assistant. How can I help you today?", is_user=False)
+        self.ids.status_label.text = "Tap the button to start speaking"
+
+    def on_leave(self):
+        self.stop_voice_assistant()
+
+    def _setup_conversation_ui(self):
+        # Create a ScrollView for conversation history
+        self.conversation_scrollview = ScrollView(
+            size_hint=(1, 0.7),
+            do_scroll_x=False,
+            do_scroll_y=True
+        )
+        
+        # Create layout for messages
+        self.conversation_layout = BoxLayout(
+            orientation='vertical',
+            size_hint_y=None,
+            spacing=10,
+            padding=10
+        )
+        self.conversation_layout.bind(minimum_height=self.conversation_layout.setter('height'))
+        
+        # Add layout to scrollview
+        self.conversation_scrollview.add_widget(self.conversation_layout)
+        
+        # Add scrollview to the screen (before the voice button)
+        main_layout = self.ids.voice_button.parent
+        main_layout.add_widget(self.conversation_scrollview, index=len(main_layout.children)-1)
+
+    def activate_voice_assistant(self, button):
+        if not self.voice_assistant_active:
+            self.voice_assistant_active = True
+            button.text = "Stop Voice Assistant"
+            button.background_color = [1, 0.3, 0.3, 1]  # Red color when active
+            self.ids.status_label.text = "Listening..."
+            
+            # Stop any existing thread
+            self.stop_thread = True
+            if self.assistant_thread and self.assistant_thread.is_alive():
+                self.assistant_thread.join(0.1)
+                
+            # Start new thread
+            self.stop_thread = False
+            self.assistant_thread = Thread(target=self.voice_assistant_loop, daemon=True)
+            self.assistant_thread.start()
+        else:
+            self.stop_voice_assistant()
+            
+    def stop_voice_assistant(self):
+        self.voice_assistant_active = False
+        self.ids.voice_button.text = "Tap to Start Speaking"
+        self.ids.voice_button.background_color = [0.3, 0.7, 0.9, 1]  # Original blue color
+        self.ids.status_label.text = "Voice assistant stopped"
+        self.stop_thread = True
+
+    def voice_assistant_loop(self):
+        # First time greeting
+        self.speak("I'm listening. How can I help you?")
+        
+        while self.voice_assistant_active and not self.stop_thread:
+            user_input = self.listen()
+            
+            if user_input == "timeout":
+                Clock.schedule_once(lambda dt: self.update_status("Waiting for your command..."), 0)
+                continue
+                
+            if user_input in ["goodbye", "bye", "exit", "quit", "stop"]:
+                Clock.schedule_once(lambda dt: self.add_message(user_input, is_user=True), 0)
+                Clock.schedule_once(lambda dt: self.add_message("Goodbye! I'm stopping the voice assistant.", is_user=False), 0)
+                Clock.schedule_once(lambda dt: self.stop_voice_assistant(), 0)
+                break
+                
+            # Add user's message to conversation
+            if user_input not in ["unclear", "error"]:
+                Clock.schedule_once(lambda dt, text=user_input: self.add_message(text, is_user=True), 0)
+                
+            # Generate and speak response
+            response = self.qa_system.generate_response(user_input)
+            
+            # Add assistant's response to conversation
+            Clock.schedule_once(lambda dt, text=response: self.add_message(text, is_user=False), 0)
+            self.speak(response)
+            
+            # Slight pause between conversation turns
+            time.sleep(0.5)
+
+    def listen(self):
+        Clock.schedule_once(lambda dt: self.update_status("Listening..."), 0)
+        with sr.Microphone() as source:
+            try:
+                self.recognizer.adjust_for_ambient_noise(source, duration=1)
+                audio = self.recognizer.listen(source, timeout=5)
+                Clock.schedule_once(lambda dt: self.update_status("Processing your speech..."), 0)
+                text = self.recognizer.recognize_google(audio)
+                return text.lower()
+            except sr.WaitTimeoutError:
+                return "timeout"
+            except sr.UnknownValueError:
+                Clock.schedule_once(lambda dt: self.update_status("I didn't catch that"), 0)
+                return "unclear"
+            except sr.RequestError:
+                Clock.schedule_once(lambda dt: self.update_status("Speech service error"), 0)
+                return "error"
+            except Exception as e:
+                print(f"Listen error: {e}")
+                return "error"
+
+    def speak(self, text):
+        Clock.schedule_once(lambda dt, t=text: self.update_status(f"Assistant is speaking..."), 0)
+        try:
+            self.engine.say(text)
+            self.engine.runAndWait()
+            Clock.schedule_once(lambda dt: self.update_status("Listening..."), 0)
+        except Exception as e:
+            print(f"Speech error: {e}")
+            Clock.schedule_once(lambda dt: self.update_status("Error in speech output"), 0)
+
+    def update_status(self, text):
+        self.ids.status_label.text = text
+        
+    def add_message(self, text, is_user=True):
+        if not text or text in ["unclear", "error", "timeout"]:
+            return
+            
+        # Create message bubble
+        message_box = BoxLayout(
+            orientation='vertical',
+            size_hint_y=None,
+            padding=[10, 5, 10, 5],
+            pos_hint={'right': 1} if is_user else {'left': 1},
+            size_hint_x=0.8
+        )
+        
+        # Text background with different colors for user vs assistant
+        with message_box.canvas.before:
+            Color(0.9, 0.9, 0.95, 1) if is_user else Color(0.8, 0.9, 1, 1)
+            RoundedRectangle(pos=message_box.pos, size=message_box.size, radius=[15, 15, 15, 15])
+        
+        # Message label
+        message_label = Label(
+            text=text,
+            color=(0, 0, 0, 1),
+            size_hint_y=None,
+            text_size=(self.width * 0.7, None),
+            halign='right' if is_user else 'left',
+            valign='middle',
+            padding=[10, 10]
+        )
+        
+        # Bind size to text for proper height calculation
+        message_label.bind(texture_size=lambda instance, size: setattr(instance, 'height', size[1]))
+        message_label.bind(width=lambda instance, width: setattr(instance, 'text_size', (width, None)))
+        
+        # Set message box height from label height
+        message_box.height = message_label.height + 20  # Add padding
+        message_box.add_widget(message_label)
+        
+        # Add to conversation layout
+        self.conversation_layout.add_widget(message_box)
+
+        # Scroll to bottom after adding message
+        def scroll_to_bottom(dt):
+            if hasattr(self, 'conversation_scrollview') and self.conversation_scrollview:
+                try:
+                    self.conversation_scrollview.scroll_to(message_box)
+                except Exception as e:
+                    print(f"Error scrolling: {e}")
+
+        # Scroll to the bottom of the conversation
+        Clock.schedule_once(scroll_to_bottom, 0.1)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.voice_assistant_active = False
