@@ -317,6 +317,7 @@ KV = '''
                 pos: self.pos
                 size: self.size
 
+        
         # Top bar with location and emergency button
         BoxLayout:
             size_hint_y: 0.06
@@ -332,7 +333,7 @@ KV = '''
 
             Label:
                 id: location_label_id
-                text: "📍 Fetching location..."
+                text: "Fetching location..."
                 font_size: "12sp"
                 color: 0, 0, 0, 1
                 size_hint_x: 0.7
@@ -349,7 +350,7 @@ KV = '''
                 on_press: root.show_notes()
 
             Button:
-                text: "🚨 Emergency"
+                text: "Emergency"
                 size_hint_x: 0.3
                 background_color: 1, 0.3, 0.3, 0.9
                 font_size: "14sp"
@@ -383,11 +384,14 @@ KV = '''
                         radius: [15]
 
 
+            # Date display
             Label:
-                text: "Today is Sunday, November 17, 2024"
-                font_size: "16sp"
-                color: 0.3, 0.3, 0.3, 1
-                size_hint_y: 0.2
+                text: root.date_text
+                font_size: "14sp"
+                color: 0, 0, 0, 1
+                size_hint_y: 0.05
+                halign: 'center'
+
 
         # Bottom grid with main feature buttons
         GridLayout:
@@ -397,7 +401,7 @@ KV = '''
             padding: 5
 
             Button:
-                text: "🧠\\nMemory\\nTraining"
+                text: "Memory\\nTraining"
                 background_color: 0.6, 0.3, 1, 0.9
                 on_press: root.manager.current = 'memory_training'
                 font_size: "20sp"
@@ -414,7 +418,7 @@ KV = '''
                         radius: [15]
 
             Button:
-                text: "💊\\nMedication\\nReminder"
+                text: "Medication\\nReminder"
                 background_color: 0.3, 0.7, 1, 1
                 on_press: root.manager.current = 'medication'
                 font_size: "18sp"
@@ -431,7 +435,7 @@ KV = '''
                         radius: [10, 10, 10, 10]
 
             Button:
-                text: "🤖\\nAI\\n"
+                text: "AI\\n"
                 background_color: 0.3, 0.7, 1, 1
                 on_press: root.manager.current = 'AI'
                 font_size: "18sp"
@@ -441,7 +445,7 @@ KV = '''
                 padding: 10, 10
 
             Button:
-                text: "📝\\nTo-Do\\nList"
+                text: "To-Do\\nList"
                 background_color: 0.3, 1, 0.5, 1
                 on_press: root.manager.current = 'todo_list'
                 font_size: "18sp"
@@ -852,10 +856,17 @@ class LocationManager:
 # Update the MainScreen class:
 class MainScreen(Screen):
     location_label = ObjectProperty(None)
+    date_text = StringProperty("")
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.location_manager = None
+        self.update_date()
+
+    def update_date(self):
+        # Format: "Today is Monday, April 24, 2025"
+        current_date = datetime.now()
+        self.date_text = current_date.strftime("Today is %A, %B %d, %Y")
         
     def on_enter(self):
         App.get_running_app().voice_controller.start_listening()
@@ -922,7 +933,7 @@ class MedicationItem(BoxLayout):
             RoundedRectangle(pos=left_box.pos, size=left_box.size, radius=[10])
 
         icon_label = Label(
-            text='💊',
+            text='',
             font_size='24sp'
         )
         left_box.add_widget(icon_label)
@@ -944,7 +955,7 @@ class MedicationItem(BoxLayout):
         name_label.bind(size=name_label.setter('text_size'))
 
         time_label = Label(
-            text=f"🕒 {medication['time']}",
+            text=f" {medication['time']}",
             font_size='16sp',
             color=(0.5, 0.5, 0.5, 1),
             halign='left'
